@@ -7,11 +7,14 @@ import java.io.{File, PrintWriter}
  */
 object General {
 
+  def rootFolder = "/Users/david/Desktop/Daten/"
+
   def printAndGetInfoBoutNoOfLines(s: String): Int = {
     val numberOfLines = getLinesFor(s).length
     println(s"About to process $numberOfLines lines.")
     numberOfLines
   }
+
   /**
    * transform an iterator of Strings into another iterator of strings
    *
@@ -29,6 +32,7 @@ object General {
    * @return
    */
   def transform[A](it: Seq[String], f_transformation: String => A): Seq[A] = it.map(f_transformation)
+
   /**
    * Given a file name returns the iterator over lines of this file
    * @param file

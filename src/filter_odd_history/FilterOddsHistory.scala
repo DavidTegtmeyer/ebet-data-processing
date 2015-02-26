@@ -45,15 +45,14 @@ object FilterOddsHistory extends App {
 
     println("counter set to zero. Here we go.")
 
-    timed{
-      while (l.hasNext)
-      {
-        if (counter % 10000 == 0)
-          println(f" ${(counter/341463156) *100}%.2f")
-        writer.write(l.next + "\n")
-        counter = counter + 1
-      }
+    while (l.hasNext)
+    {
+      if (counter % 10000 == 0)
+        println(f" ${(counter/341463156) *100}%.2f")
+      writer.write(l.next + "\n")
+      counter = counter + 1
     }
+
 
 
     writer.close()

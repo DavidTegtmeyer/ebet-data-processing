@@ -38,12 +38,10 @@ object FilterSingleBets extends App {
 
     writer.write("deliveryDate;type;oddId;odd;stake;customerId;automaticCustomerRating;automaticCustomerRatingLive;eventId\n")
 
-    timed {
-      while (filteredBetsWithEId.hasNext) {
-        // println(filteredBetsWithEId.next)
-        writer.write(filteredBetsWithEId.next + "\n")
+    while (filteredBetsWithEId.hasNext) {
+      // println(filteredBetsWithEId.next)
+      writer.write(filteredBetsWithEId.next + "\n")
 
-      }
     }
 
 

@@ -17,11 +17,10 @@ object CreateOddIdToEventIdMap extends App {
 
     val writer = new PrintWriter(new File("/Users/david/Desktop/EBET-816/helper/oddids-to-eventids.csv"))
 
-    timed {
-      while (pairs.hasNext) {
-        writer.write(pairs.next + "\n")
 
-      }
+    while (pairs.hasNext) {
+      writer.write(pairs.next + "\n")
+
     }
 
 
