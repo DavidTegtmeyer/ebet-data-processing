@@ -7,19 +7,29 @@ import util.General._
 object OddUpdate{
   def apply(line: String): OddUpdate = {
     val splitted = line.split(";")
-    OddUpdate(splitted(0), splitted(1), splitted(2), splitted(3), splitted(4), splitted(5),
-      splitted(6), splitted(7), splitted(8), splitted(9), splitted(10), splitted(11))
+    OddUpdate(//splitted(0),
+      //splitted(1),
+      //splitted(2),
+      //splitted(3),
+      splitted(4),
+      //splitted(5),
+      //splitted(6),
+      splitted(7),
+      //splitted(8),
+      splitted(9),
+      splitted(10),
+      splitted(11))
   }
 }
-case class OddUpdate(provider: String,
-                     eventId: String,
-                     marketType: String,
-                     marketParam: String,
+case class OddUpdate(//provider: String,
+                     //eventId: String,
+                     //marketType: String,
+                     //marketParam: String,
                      oddId: String,
-                     choiceParam: String,
-                     odd: String,
+                     //choiceParam: String,
+                     //odd: String,
                      oddUpdated: String,
-                     eventBegin: String,
+                     //eventBegin: String,
                      previousQuote: String,
                      diffRatio: String,
                      diff: String)
@@ -58,19 +68,22 @@ object AppendPreviousQuoteToSingleBets extends App {
     println(ohHeader)
     println("Grouping and sorting Elements")
     val ohCaseClassed = lines.map(OddUpdate(_))
-    val groupedByOddId = ohCaseClassed.toSeq.groupBy(_.oddId)
+    val groupedByOddId = ohCaseClassed.toStream.groupBy(_.oddId)
     val groupedByOddIdSorted = groupedByOddId.map(mapElement => (mapElement._1 -> mapElement._2.sortBy(_.oddUpdated).reverse))
 
     val singleBetLines = getLinesFor(rootFolder + "/single-bets/single-bets-filtered-by-buli-with-eventbegin.csv")
+    val singleBetsHeader = singleBetLines.next()
     val singleBets = singleBetLines.map(SingleBet(_))
     println("single-bets retrieved...")
     println("starting to append previous quotes..")
-    val singleBetsHeader = singleBets.next()
+
 
     def appendPreviousOddToSingleBetLine(singleBet: SingleBet): String = {
       val currentOddId = singleBet.oddId
       val currentDeliveryDate = singleBet.deliveryDate
       val eventBegin = singleBet.eventBegin
+      val currentQuote = singleBet.odd
+
       val firstSmaller = groupedByOddIdSorted(currentOddId).collectFirst {
         case ohEntry if (ohEntry.oddUpdated < currentDeliveryDate) => ohEntry
       }
@@ -78,7 +91,10 @@ object AppendPreviousQuoteToSingleBets extends App {
         case Some(ohEntry) => singleBet.copy(previousQuote = ohEntry.previousQuote)
         case None =>
           println("FEHLER!! ")
-          singleBet.copy(previousQuote = "-1.0")
+          println("Odds and delivery date")
+          groupedByOddIdSorted(currentOddId).foreach(println)
+          println(currentDeliveryDate)
+          singleBet.copy(previousQuote = currentQuote)
       }
 
       singleBetToString(result)
@@ -87,7 +103,7 @@ object AppendPreviousQuoteToSingleBets extends App {
     println("printing result")
     println(singleBetsHeader + ": String,previousOdd")
 
-    write(rootFolder + "/single-bets/single-bets-filtered-by-buli-withPrevious.csv", singleBets.map(appendPreviousOddToSingleBetLine), singleBetsHeader + ": String,previousOdd", 13399002)
+    write(rootFolder + "/single-bets/single-bets-filtered-by-buli-withPrevious.csv", singleBets.map(appendPreviousOddToSingleBetLine), singleBetsHeader + ";previousOdd", 13399002)
   }
 
   def singleBetToString(singleBet: SingleBet): String = {
