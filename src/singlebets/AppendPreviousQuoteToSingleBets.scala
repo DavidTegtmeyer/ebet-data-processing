@@ -9,12 +9,12 @@ object OddUpdate{
     val splitted = line.split(";")
     OddUpdate(//splitted(0),
       //splitted(1),
-      //splitted(2),
+      splitted(2),
       //splitted(3),
       splitted(4),
       //splitted(5),
       //splitted(6),
-      splitted(7),
+      splitted(7).split("E")(0).toDouble,
       //splitted(8),
       splitted(9),
       splitted(10),
@@ -23,12 +23,12 @@ object OddUpdate{
 }
 case class OddUpdate(//provider: String,
                      //eventId: String,
-                     //marketType: String,
+                     marketType: String,
                      //marketParam: String,
                      oddId: String,
                      //choiceParam: String,
                      //odd: String,
-                     oddUpdated: String,
+                     oddUpdated: Double,
                      //eventBegin: String,
                      previousQuote: String,
                      diffRatio: String,
@@ -39,12 +39,12 @@ object SingleBet {
     val splitted = line.split(";")
 
     SingleBet(splitted(0), splitted(1), splitted(2), splitted(3), splitted(4), splitted(5),
-      splitted(6), splitted(7), splitted(8), splitted(9), "")
+      splitted(6), splitted(7), splitted(8), splitted(9).split("E")(0).toDouble, "")
 
   }
 }
 
-case class SingleBet(deliveryDate: String,
+case class SingleBet(
                      _type: String,
                      oddId: String,
                      odd: String,
@@ -54,6 +54,7 @@ case class SingleBet(deliveryDate: String,
                      automaticCustomerRatingLive: String,
                      eventId: String,
                      eventBegin :String,
+                      deliveryDate: Double,
                       previousQuote: String)
 object AppendPreviousQuoteToSingleBets extends App {
 
@@ -71,7 +72,7 @@ object AppendPreviousQuoteToSingleBets extends App {
     val groupedByOddId = ohCaseClassed.toStream.groupBy(_.oddId)
     val groupedByOddIdSorted = groupedByOddId.map(mapElement => (mapElement._1 -> mapElement._2.sortBy(_.oddUpdated).reverse))
 
-    val singleBetLines = getLinesFor(rootFolder + "/single-bets/single-bets-filtered-by-buli-with-eventbegin.csv")
+    val singleBetLines = getLinesFor(rootFolder + "/single-bets/single-bets-correct-with-eventbegin.csv")
     val singleBetsHeader = singleBetLines.next()
     val singleBets = singleBetLines.map(SingleBet(_))
     println("single-bets retrieved...")
